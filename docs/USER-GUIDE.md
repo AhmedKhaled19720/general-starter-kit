@@ -1,127 +1,121 @@
-# دليل استخدام وتخصيص القالب
+# User Guide
 
-[العودة إلى README](../README.md) · [حل المشاكل](TROUBLESHOOTING.md)
+[Back to README](../README.md) · [Troubleshooting](TROUBLESHOOTING.md)
 
-## 1. ما الذي تحصل عليه؟
+## 1. What you get
 
-مشروع Laravel وVue مستقل تبدأ منه مشروعك الجديد. يتضمن تسجيل الدخول، المستخدمين، الأدوار والصلاحيات، المظهر، العربية والإنجليزية، سجل النشاط، وتجهيز إشعارات داخل التطبيق معطّل افتراضيًا.
+An independent Laravel and Vue application for starting new projects. It includes authentication, users, roles and permissions, appearance preferences, Arabic and English, an activity log, and an in-app notification scaffold disabled by default.
 
-كل نسخة تبدأ بها مشروعًا جديدًا لها قاعدة بياناتها وإعداداتها. تحديث هذه النسخة الأساسية لا يحدّث المشاريع السابقة تلقائيًا. احتفظ بالتعديلات العامة في القالب، وراجع الفرق واختباراته قبل نقله إلى مشروع قائم.
+Each project has its own database and environment settings. Updating the template does not automatically update existing projects. Keep reusable changes in the template, then review their differences and tests before applying them to an existing application.
 
-## 2. بدء نسخة جديدة
+## 2. Create a new copy
 
-من مجلد القالب، صدّر إلى مجلد غير موجود:
+From the starter directory, export to a directory that does not exist:
 
 ```powershell
 ./scripts/export.ps1 -Destination D:/Projects/my-new-app
 ```
 
-أو فك نسخة ZIP في مجلد جديد. النسخة النظيفة لا تحتوي على `.env` أو قاعدة البيانات أو الاعتماديات أو حسابات المعاينة. بعد ذلك اتبع [خطوات التثبيت](../README.md#بدء-مشروع-جديد).
+Alternatively, extract the ZIP into a new directory. A clean copy excludes `.env`, the database, installed dependencies, and preview accounts. Follow the [installation steps](../README.md#start-a-new-project).
 
-لا تصدّر داخل مجلد القالب نفسه. السكربت يرفض الوجهة الموجودة لتجنب الكتابة فوق مشروع آخر. الملف `.env.example` نموذج إعدادات فقط، ولا يصلح بدلًا من `.env` الفعلي.
+Do not export inside the starter directory. The script rejects existing destinations to avoid overwriting another project. `.env.example` is a configuration template; create an actual `.env` file from it.
 
-## 3. إعدادات المشروع
+## 3. Project configuration
 
-| المتغير في `.env` | وظيفته |
+| Variable in `.env` | Purpose |
 | --- | --- |
-| `APP_NAME` | اسم التطبيق الظاهر في الواجهة |
-| `APP_URL` | عنوان التطبيق الفعلي؛ اضبطه كذلك عند إعداد روابط البريد |
-| `APP_KEY` | مفتاح التطبيق؛ يُنشأ مرة عند تجهيز نسخة جديدة |
-| `DB_CONNECTION` | `sqlite` افتراضيًا، أو محرك قاعدة البيانات الذي جهزته |
-| `DB_DATABASE` | مسار SQLite أو اسم قاعدة البيانات حسب المحرك |
-| `STARTER_ADMIN_EMAIL` | بريد مدير النظام عند أول seeding |
-| `STARTER_ADMIN_PASSWORD` | كلمة مرور مدير النظام عند إنشائه لأول مرة |
-| `STARTER_LOCALE` | `ar` أو `en` كلغة افتراضية |
-| `STARTER_LAYOUT` | `navbar` أو `sidebar` كشكل افتراضي |
-| `STARTER_NOTIFICATIONS_ENABLED` | `false` افتراضيًا، ويظل كذلك إلى أن تحتاج الوحدة |
+| `APP_NAME` | Application name displayed in the interface |
+| `APP_URL` | Actual application URL, also used for email links |
+| `APP_KEY` | Application key generated once for a new application |
+| `DB_CONNECTION` | `sqlite` by default, or your configured database engine |
+| `DB_DATABASE` | SQLite file path or database name, depending on the engine |
+| `STARTER_ADMIN_EMAIL` | Administrator email used during initial seeding |
+| `STARTER_ADMIN_PASSWORD` | Administrator password used when first creating the account |
+| `STARTER_LOCALE` | Default language: `ar` or `en` |
+| `STARTER_LAYOUT` | Default layout: `navbar` or `sidebar` |
+| `STARTER_NOTIFICATIONS_ENABLED` | Defaults to `false`; keep disabled until needed |
 
-بعد تعديل إعدادات Laravel استخدم `php artisan config:clear`. بعد تعديل اسم التطبيق أو إعدادات `VITE_*` أعد تشغيل Vite أو نفّذ `npm run build` للنسخة المبنية.
+Run `php artisan config:clear` after changing Laravel configuration. Restart Vite or run `npm run build` after changing the application name or `VITE_*` settings.
 
-إعدادات البريد الافتراضية تستخدم `MAIL_MAILER=log`: رسائل استعادة كلمة المرور والتحقق تكتب في سجل التطبيق، ولا تصل إلى بريد حقيقي. اضبط مزود البريد وبياناته في مشروعك عند الحاجة للإرسال.
+The default `MAIL_MAILER=log` writes password reset and verification messages to application logs instead of delivering real email. Configure a mail provider and its credentials when delivery is needed.
 
-## 4. المستخدمون والأدوار
+## 4. Users and roles
 
-بعد ضبط بيانات المدير وتشغيل `php artisan migrate --seed`، ادخل بالإيميل الذي اخترته أو اسم المستخدم `admin`.
+After configuring the administrator and running `php artisan migrate --seed`, log in with the chosen email or the username `admin`.
 
-الأدوار الأولية:
-
-| الدور | السلوك الأولي |
+| Role | Initial behavior |
 | --- | --- |
-| `super-admin` | يتجاوز فحوص الصلاحيات والسياسات؛ لا يعتمد على رقم المستخدم |
-| `admin` | إدارة المستخدمين والأدوار وقراءة سجل النشاط |
-| `user` | مستخدم عادي، بلا صلاحيات إدارية افتراضية |
+| `super-admin` | Bypasses permission and policy checks; privileges do not depend on user ID |
+| `admin` | Manages users and roles and reads the activity log |
+| `user` | Regular user without default administrative permissions |
 
-صفحة المستخدمين تتيح الإنشاء والتعديل، واختيار الدور والصورة، والحذف القابل للاسترجاع. الحذف النهائي متاح لمدير النظام. البريد واسم المستخدم يظلان محجوزين للحساب المحذوف مؤقتًا حتى يمكن استرجاعه دون تعارض.
+The users page supports creating and editing accounts, selecting roles and avatars, soft deletion, and restoration. Permanent deletion is available to the super administrator. Soft-deleted accounts retain their unique email addresses and usernames so they can be restored without conflicts.
 
-الرول `super-admin` محمي من التعديل والحذف. المدير العادي لا يمكنه إنشاء أو تعديل حساب بصلاحيات مدير النظام. لا يمكن إزالة هذا الدور من آخر مدير نظام نشط. حذف حساب المستخدم الحالي ممنوع أيضًا.
+The `super-admin` role cannot be edited or deleted. Ordinary administrators cannot create or edit super administrator accounts. The last active super administrator cannot lose that role. Users cannot delete their own accounts through the user management action.
 
-التسجيل العام غير متاح في النسخة الحالية. إنشاء الحسابات يتم من لوحة المستخدمين. إنشاء مستخدم من الإدارة يضع بريده في حالة متحقق منه؛ إذا احتاج مشروعك دعوات أو إثبات ملكية البريد قبل الدخول، أضف هذا المسار واختباراته.
+Public registration is disabled. Administrators create accounts through user management, which marks the new email address as verified. If your project requires invitations or email ownership verification before access, implement and test that workflow.
 
-الـ seeder يستخدم `firstOrCreate`: إعادة تشغيله لا تعيد تعيين كلمة مرور المدير الموجود. لا تعتمد على تغيير كلمة المرور في `.env` لتغيير كلمة مرور حساب سبق إنشاؤه. استخدم إدارة المستخدمين أو مسار استعادة كلمة المرور بعد تجهيز البريد.
+The seeder uses `firstOrCreate`, so rerunning it does not reset an existing administrator password. Changing the password in `.env` does not update an existing account. Use user management or password recovery after configuring mail delivery.
 
-## 5. الألوان والخط
+## 5. Colors and typography
 
-افتح **ألوان المشروع** بحساب يملك `project.manage` أو دور `super-admin`.
+Open **Project colors** with `project.manage` permission or the `super-admin` role.
 
-لكل من الوضع الفاتح والداكن خمس قيم:
+Each light and dark palette has five values:
 
-- اللون الأساسي للأزرار والروابط.
-- لون النص على اللون الأساسي.
-- خلفية الصفحة.
-- لون النص.
-- خلفية المكونات.
+- Primary button and link color.
+- Text color on the primary background.
+- Page background.
+- Foreground text color.
+- Card background.
 
-أدخل لونًا بصيغة `#RRGGBB` أو استخدم منتقي اللون، ثم **حفظ الألوان**. إعدادات اللون المحفوظة مشتركة بين المستخدمين، وتظهر عند تحميل الصفحة أو استقبال بيانات صفحة جديدة؛ لا توجد مزامنة فورية عبر WebSockets للنوافذ المفتوحة.
+Enter a `#RRGGBB` value or use the color picker, then save. Saved colors apply to all users on the next page load or page data response. Open windows do not receive live WebSocket updates.
 
-زر **استعادة الألوان الأصلية** يعيد قيم النموذج إلى إعدادات `config/starter.php`، ثم يجب الضغط على **حفظ الألوان** لتطبيقها. المعاينة الموجودة داخل صفحة الألوان تعرض مجموعة الوضع الفاتح؛ لفحص مجموعة الوضع الداكن فعليًا، اختر الوضع الداكن من إعدادات الحساب بعد الحفظ.
+The reset button loads the defaults from `config/starter.php` into the form. Save the form to persist them. The inline preview displays the light palette; check the dark palette by selecting dark mode in account settings after saving.
 
-الأولوية: الألوان المحفوظة في جدول `project_settings` تتقدم على قيم `config/starter.php`. لهذا قد لا ترى تغيير اللون الافتراضي في ملف الإعدادات إذا كان هناك تخصيص محفوظ.
+Saved values in `project_settings` override defaults in `config/starter.php`. Editing a default will therefore not replace an existing saved customization.
 
-خط **Cairo** مضبوط في CSS ومحمل من Google Fonts داخل `resources/views/app.blade.php`. إذا أردت تشغيلًا بدون اتصال بخدمة الخطوط، استضف ملفات Cairo المرخصة محليًا وأضف `@font-face` بدل الرابط الخارجي.
+The **Cairo** font is configured in CSS and loaded from Google Fonts in `resources/views/app.blade.php`. For offline use, host appropriately licensed Cairo files locally and replace the external font link with `@font-face` rules.
 
-اختيار الألوان لا يتضمن قياسًا آليًا للتباين. راجع وضوح النص والأزرار في الوضعين قبل اعتماد الألوان. ألوان الأخطاء والتحذيرات والحدود يتم تعديلها من `resources/css/app.css`؛ ليست كلها حقولًا في صفحة الألوان.
+The color picker does not calculate contrast automatically. Check text and button readability in both modes. Error, warning, and border colors can be changed in `resources/css/app.css`; not every CSS color has a field on the settings page.
 
-## 6. الناف والسايدبار والمظهر
+## 6. Navigation and appearance
 
-من **الإعدادات ← المظهر** يمكن لكل مستخدم اختيار:
+Under **Settings > Appearance**, each user can select:
 
-- قائمة علوية أو قائمة جانبية.
-- فاتح أو داكن أو حسب إعداد الجهاز.
-- عربي أو إنجليزي.
+- Navbar or sidebar.
+- Light, dark, or system appearance.
+- Arabic or English.
 
-تُحفظ الاختيارات في `users.preferences` وتتبع الحساب عند الدخول من جهاز آخر. تغيير الإعداد الافتراضي لا يستبدل اختيارًا محفوظًا لدى مستخدم. الناف والسايدبار يستخدمان قائمة روابط واحدة من `config/starter.php` وتُصفّى حسب الصلاحيات.
+Preferences are stored in `users.preferences` and follow the account across devices. Changing a default does not overwrite a saved preference. Both navigation layouts use the same permission-filtered links from `config/starter.php`.
 
-على الشاشات الصغيرة يظهر زر قائمة للتنقل بدل عرض السايدبار كاملًا.
+Small screens display a navigation menu button instead of a full sidebar.
 
-## 7. اللغة وإضافة نصوص
+## 7. Languages and new text
 
-زر اللغة يبدّل العربية والإنجليزية واتجاه الصفحة. للزائر يُحفظ الاختيار في الجلسة، وللمستخدم المسجل يُحفظ في الحساب. هذه الآلية لا تترجم أسماء المستخدمين أو بيانات مشروعك المدخلة تلقائيًا.
+The language button switches between Arabic and English and updates the page direction. Guest choices are stored in the session; authenticated choices are stored on the account. User names and project data are not translated automatically.
 
-للواجهة:
+For frontend text:
 
 ```vue
 <span>{{ $t('Orders') }}</span>
 ```
 
-أضف المفتاح إلى `resources/js/locales/ar.ts`:
+Add the `Orders` key and its Arabic translation to `resources/js/locales/ar.ts`.
 
-```ts
-'Orders': 'الطلبات',
-```
+For PHP messages, use `__('Order saved.')` and add the translation to `lang/ar.json`. Arabic validation messages are in `lang/ar/validation.php`; extend them for new fields as needed.
 
-للرسائل القادمة من PHP استخدم `__('Order saved.')`، وأضف ترجمتها إلى `lang/ar.json`. رسائل التحقق العربية موجودة في `lang/ar/validation.php` ويمكن توسيعها عند إضافة حقول جديدة.
+English text is the fallback when a translation is missing. Frontend and server messages use separate catalogs. Update the appropriate file, or both if the same text appears in both contexts.
 
-النص الإنجليزي هو المفتاح الاحتياطي عندما لا توجد ترجمة. ترجمة الواجهة ورسائل الخادم موجودة في ملفين مختلفين؛ عدّل الملف المناسب أو الاثنين إذا كان النص مستخدمًا فيهما.
+## 8. Add a page or module
 
-## 8. إضافة صفحة أو وحدة جديدة
-
-1. أضف الموديل والـ migration ومنطق المشروع الخاص بك عند الحاجة.
-2. أضف صفحة Vue داخل `resources/js/pages` واربطها من Laravel باستخدام Inertia.
-3. أضف route والصلاحية المناسبة على الخادم في `routes/web.php`.
-4. أضف الصلاحية في `RolePermissionSeeder.php` وحدد الأدوار التي تحصل عليها. انتبه إلى أن `syncPermissions` يستبدل صلاحيات الدور بالقائمة المحددة عند إعادة تشغيله.
-5. أضف رابطًا إلى `navigation` في `config/starter.php` مع `label` و`href` و`icon` و`permission`، ثم أضف ترجمة الاسم.
-6. الأيقونات المتاحة معرفة في `StarterNavigation.vue`؛ يمكنك إضافة أيقونة Lucide جديدة إلى خريطتها. المفتاح غير المعروف يستخدم أيقونة الداشبورد.
-7. بعد تغيير المسارات أعد بناء الواجهة، أو ولّد Wayfinder قبل فحص TypeScript:
+1. Add the model, migration, and project-specific logic as needed.
+2. Add a Vue page under `resources/js/pages` and render it from Laravel through Inertia.
+3. Add a route with the appropriate server-side authorization in `routes/web.php`.
+4. Add permissions to `RolePermissionSeeder.php` and assign them to the intended roles. Rerunning `syncPermissions` replaces the role's permissions with the specified list.
+5. Add a `navigation` entry in `config/starter.php` with `label`, `href`, `icon`, and `permission`, then translate the label.
+6. Available icons are mapped in `StarterNavigation.vue`. Add a Lucide icon to that map when needed. Unknown keys fall back to the dashboard icon.
+7. After route changes, rebuild the frontend or generate Wayfinder files before checking TypeScript:
 
 ```powershell
 php artisan wayfinder:generate --with-form
@@ -129,20 +123,20 @@ npm run types:check
 npm run build
 ```
 
-إخفاء رابط أو زر في Vue ليس بديلًا عن حماية مسار Laravel. اختبر وصول مستخدم مصرح له وآخر غير مصرح له.
+Hiding a Vue link or button does not authorize the corresponding Laravel route. Test both permitted and forbidden access.
 
-## 9. الإشعارات
+## 9. Notifications
 
-الوحدة مجهزة بجدول وإشعار عام وصفحة عرض وتعليم كمقروء. طالما `STARTER_NOTIFICATIONS_ENABLED=false`، لا يظهر الزر ولا تُسجل المسارات، و`SystemNotification` لا يرسل لقناة قاعدة البيانات.
+The scaffold includes a database table, general notification class, list page, and read actions. While `STARTER_NOTIFICATIONS_ENABLED=false`, the button is hidden, routes are not registered, and `SystemNotification` does not send to the database channel.
 
-عند تفعيلها مستقبلًا: غيّر القيمة إلى `true`، ثم نفّذ `php artisan optimize:clear` وأعد بناء caches إن كانت مستخدمة. اربط الإرسال بحدث داخل مشروعك باستخدام المثال في [README](../README.md#الإشعارات--جاهزة-وغير-مفعلة).
+When needed, set the flag to `true`, run `php artisan optimize:clear`, and rebuild caches if used. Connect sending to a project event using the [README example](../README.md#notifications).
 
-لا توجد أحداث إرسال تلقائية، ولا بريد أو push أو WebSockets أو polling لهذه الوحدة. رسائل المصادقة مثل استعادة كلمة المرور مستقلة عنها وتخضع لإعداد البريد.
+This module has no automatic sending events, email, push, WebSockets, or polling. Authentication mail, including password resets, is independent and follows the mail configuration.
 
-## 10. التحقق والصيانة
+## 10. Validation and maintenance
 
-نفّذ أوامر التحقق الموجودة في README بعد تغيير المنطق أو الواجهة. نتائج التحقق أثناء تجهيز النسخة في 4 أكتوبر 2026: **45 اختبارًا ناجحًا، واختباران متجاوزان، و176 assertion**؛ مع نجاح PHPStan وTypeScript وlint والبناء. هذه نتائج تلك النسخة، وليست ضمانًا لأي تعديلات لاحقة.
+Run the validation commands in the README after changing application logic or the frontend. During preparation on October 4, 2026, **45 tests passed, 2 were skipped, and 176 assertions completed**. PHPStan, TypeScript, lint, and the production build also passed. These results describe that version, not future modifications.
 
-تم فحص الواجهة يدويًا على عرض الكمبيوتر والموبايل، وتجربة حفظ الألوان وتبديل اللغة وشكل التنقل. لم يُنفّذ اختبار نشر إنتاجي أو اختبار تحميل أو فحص شامل لكل بيئات الاستضافة.
+Manual desktop and mobile checks covered color persistence, language switching, and navigation layouts. Production deployment, load testing, and exhaustive hosting compatibility checks were not performed.
 
-للنشر جهّز مشروعك حسب بيئتك: جذر الويب `public`، قاعدة البيانات، صلاحيات كتابة `storage` و`bootstrap/cache`، إعدادات البيئة والبريد، ثم بناء الأصول وتنفيذ migrations المناسبة. استخدم `APP_DEBUG=false` في الإنتاج. لا تستخدم مفتاح الاختبار في `phpunit.xml` كمفتاح للتطبيق، ولا تولّد مفتاحًا جديدًا فوق قاعدة بيانات مستخدمة كخطوة إصلاح عامة.
+For deployment, configure the `public` web root, database, write access to `storage` and `bootstrap/cache`, environment and mail settings, asset build, and appropriate migrations. Set `APP_DEBUG=false` in production. Never use the test key from `phpunit.xml` as the application key or regenerate an existing application's key as a general repair step.

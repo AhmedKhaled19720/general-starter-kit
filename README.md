@@ -1,39 +1,39 @@
 # General Laravel + Vue Starter Kit
 
-قالب مستقل مستخرج من Act-tracker، بنفس اللون الأخضر وخط **Cairo**، بدون الكيسات أو العملاء أو الفرق أو التقارير.
+An independent starter extracted from Act-tracker, preserving the green palette and **Cairo** font, without cases, customers, teams, or reports.
 
-## الدليل
+## Documentation
 
-- [دليل الاستخدام والتخصيص](docs/USER-GUIDE.md): إعداد مشروع جديد، إدارة الحسابات والصلاحيات، الألوان، التنقل، اللغة والإشعارات.
-- [المشاكل الشائعة وحلولها](docs/TROUBLESHOOTING.md): تشخيص أخطاء التثبيت والتشغيل والدخول والبناء، وحدود النسخة الحالية.
+- [User guide](docs/USER-GUIDE.md): project setup, accounts, permissions, colors, navigation, languages, and notifications.
+- [Troubleshooting](docs/TROUBLESHOOTING.md): installation, runtime, authentication, and build issues, plus current limitations.
 
-هذه نسخة Starter Kit مستقلة؛ ليست مكتبة منشورة يمكن تثبيتها حاليًا باستخدام `composer require`، وتعديلات القالب لا تصل تلقائيًا إلى المشاريع المنسوخة منه.
+This is a standalone starter application. It is not currently a published library installed with `composer require`. Updates to this template do not automatically update projects created from it.
 
-## المتطلبات
+## Requirements
 
-المتطلبات التالية مأخوذة من ملفات الاعتماديات المقفلة المرفقة، وليست من رقم Laravel وحده:
+These requirements reflect the included lockfiles, not just the Laravel version:
 
-- PHP **8.4.1 أو أحدث ضمن إصدارات PHP 8 المتوافقة**. رغم أن `composer.json` يذكر `^8.3`، فإن بعض الاعتماديات المقفلة وأدوات الاختبار تتطلب 8.4.1.
-- Composer مع الامتدادات المطلوبة للاعتماديات. بعد التثبيت استخدم `composer check-platform-reqs` للتحقق.
-- Node.js متوافق مع Vite وVite Plus المرفقين: `^20.19.0` أو `^22.18.0` أو `>=24.11.0`، وnpm.
-- SQLite وامتداد `pdo_sqlite` للإعداد الافتراضي والاختبارات. يمكن إعداد MySQL للمشروع مع امتداد `pdo_mysql`.
-- PowerShell عند استخدام سكربت التصدير؛ أو فك ملف ZIP يدويًا على أي نظام مناسب.
+- PHP **8.4.1 or later within compatible PHP 8 releases**. Although `composer.json` specifies `^8.3`, some locked dependencies and testing tools require 8.4.1.
+- Composer and the required PHP extensions. Run `composer check-platform-reqs` after installation.
+- Node.js compatible with the included Vite and Vite Plus: `^20.19.0`, `^22.18.0`, or `>=24.11.0`, plus npm.
+- SQLite and `pdo_sqlite` for the default configuration and tests. Projects can configure MySQL with `pdo_mysql`.
+- PowerShell for the export script, or extract the ZIP manually on a supported system.
 
-شغّل جميع الأوامر التالية من مجلد القالب أو المشروع الجديد الذي يحتوي على `artisan` و`composer.json`.
+Run commands from the starter or new project directory containing `artisan` and `composer.json`.
 
-## الموجود
+## Features
 
-- Laravel 13، Vue 3، TypeScript، Inertia، Tailwind 4.
-- تسجيل الدخول بالإيميل أو اسم المستخدم، استعادة كلمة المرور، التحقق من البريد والتحقق بخطوتين. التسجيل العام معطّل افتراضيًا.
-- المستخدمون والصور الشخصية والحذف والاسترجاع، الأدوار والصلاحيات وسجل النشاط.
-- قائمة علوية أو جانبية من **الإعدادات ← المظهر**؛ الاختيار محفوظ لكل مستخدم في قاعدة البيانات.
-- عربي/إنجليزي مع زر تبديل اللغة واتجاه RTL/LTR، واللغة محفوظة لكل مستخدم. للزائر تحفظ في الجلسة.
-- ألوان عامة للمشروع من **ألوان المشروع** بصلاحية `project.manage`، مع إعدادات مستقلة للوضع الفاتح والداكن، ومعاينة واستعادة الألوان الأصلية.
-- نظام إشعارات داخل التطبيق جاهز لكنه **معطّل بالكامل افتراضيًا**؛ بدون إرسال تلقائي أو polling أو broadcast.
+- Laravel 13, Vue 3, TypeScript, Inertia, and Tailwind 4.
+- Login with email or username, password recovery, email verification, and two-factor authentication. Public registration is disabled by default.
+- Users, avatars, soft deletion and restoration, roles, permissions, and an activity log.
+- Navbar or sidebar selection under **Settings > Appearance**, saved per user in the database.
+- Arabic and English, a language switch, and RTL/LTR support. Authenticated preferences are stored per account; guest language is stored in the session.
+- Global project colors protected by `project.manage`, with separate light and dark palettes, a preview, and a reset option.
+- An in-app notification module that is **fully disabled by default**, with no automatic sending, polling, or broadcasting.
 
-## بدء مشروع جديد
+## Start a new project
 
-انسخ ملفات القالب إلى مجلد مشروعك الجديد بدون `.env` و`vendor` و`node_modules` و`public/build` وقاعدة البيانات. يمكن استخدام سكربت التصدير أدناه لعمل نسخة نظيفة.
+Copy the starter into a new project directory without `.env`, `vendor`, `node_modules`, `public/build`, or the database. Use the export script below for a clean copy.
 
 ```powershell
 composer install
@@ -42,9 +42,9 @@ Copy-Item .env.example .env
 php artisan key:generate
 ```
 
-عدّل `.env`: اسم المشروع `APP_NAME`، إعدادات قاعدة البيانات، وإيميل وكلمة مرور مدير النظام `STARTER_ADMIN_EMAIL` و`STARTER_ADMIN_PASSWORD`. لا توجد كلمة مرور افتراضية داخل القالب. اترك `STARTER_NOTIFICATIONS_ENABLED=false`.
+Set `APP_NAME`, the database settings, `STARTER_ADMIN_EMAIL`, and `STARTER_ADMIN_PASSWORD` in `.env`. The starter has no default password. Keep `STARTER_NOTIFICATIONS_ENABLED=false`.
 
-لـ SQLite:
+For SQLite:
 
 ```powershell
 New-Item database/database.sqlite -ItemType File
@@ -53,40 +53,40 @@ npm run build
 php artisan serve
 ```
 
-أثناء تعديل الواجهة شغّل `npm run dev` في نافذة طرفية ثانية. `php artisan serve` يشغّل التطبيق، وVite يتولى إعادة تحميل تغييرات Vue وCSS.
+For frontend development, run `npm run dev` in a second terminal. `php artisan serve` runs the application, while Vite reloads Vue and CSS changes.
 
-استخدم خطوات الإعداد اليدوية هنا لأول تشغيل. أمر `composer setup` الموروث لا ينشئ مدير النظام بالـ seed ولا يغني عن ضبط بياناته. لا تستخدمه لإصلاح مشروع موجود لأنه يتضمن توليد مفتاح تطبيق جديد.
+Use these manual setup steps for the first installation. The inherited `composer setup` command does not seed the administrator or replace configuring its credentials. Do not use it to repair an existing application: it generates a new application key.
 
-الدخول بإيميل المدير الذي اخترته، أو اسم المستخدم `admin`. الرول `super-admin` يمنح الصلاحيات؛ رقم المستخدم لا يؤثر عليها. حذف أو تعديل الرول المحمي ممنوع، والمدير العادي لا يستطيع منح رول `super-admin` أو تعديل مستخدم يحمل هذا الرول.
+Log in with the configured administrator email or the username `admin`. Privileges come from the `super-admin` role, regardless of user ID. This protected role cannot be edited or deleted. Ordinary administrators cannot grant it or edit an account that holds it.
 
-## تخصيص القالب
+## Customize the starter
 
-- `config/starter.php`: الألوان الأصلية، اللغة الافتراضية، شكل التنقل الافتراضي، وقائمة الروابط وصلاحية كل رابط. الناف والسايدبار يستخدمان نفس القائمة.
-- `resources/css/app.css`: الألوان الثانوية، الحالات، الحدود والخط. ألوان المشروع المحفوظة تطبق على `primary` و`primary_foreground` و`background` و`foreground` و`card` في الوضعين، ويتبعها لون التركيز والخلفية المخففة.
-- `resources/js/locales/ar.ts`: ترجمة الواجهة. النص الإنجليزي هو المفتاح؛ استخدم `$t('Your label')` في Vue وأضف ترجمته.
-- `lang/ar.json`: ترجمة الرسائل القادمة من Laravel؛ استخدم `__('Your message')`.
-- `routes/web.php`: أضف وظائف مشروعك الجديد هنا، ولا تضفها إلى الأجزاء العامة.
-- `database/seeders/RolePermissionSeeder.php`: أضف صلاحيات المشروع الجديد وأدواره، واحفظ `super-admin` كرول محمي.
+- `config/starter.php`: default colors, locale, layout, and navigation links with their permissions. Both navigation layouts use the same list.
+- `resources/css/app.css`: secondary colors, states, borders, and typography. Saved project colors override `primary`, `primary_foreground`, `background`, `foreground`, and `card` in both modes; focus and muted primary backgrounds follow these values.
+- `resources/js/locales/ar.ts`: frontend translations. English text is the key; use `$t('Your label')` in Vue and add its translation.
+- `lang/ar.json`: Laravel message translations; use `__('Your message')`.
+- `routes/web.php`: routes for new project features. Keep domain-specific functionality separate from reusable components.
+- `database/seeders/RolePermissionSeeder.php`: project roles and permissions. Keep `super-admin` protected.
 
-تفضيلات الحساب مستقلة عن ألوان المشروع. تغيير اللون يؤثر على الجميع، بينما تغيير اللغة أو شكل التنقل أو الوضع الفاتح/الداكن يخص الحساب فقط.
+Account preferences are separate from project colors. Colors apply to everyone; language, navigation layout, and light/dark mode belong to each account.
 
-## الإشعارات — جاهزة وغير مفعلة
+## Notifications
 
-الموجود: جدول notifications، Notification عامة، صفحة عرض، تعليم كمقروء، تعليم الكل كمقروء، وزر يظهر فقط بعد التفعيل. كل عملية قراءة مقيدة بصاحب الإشعار.
+The scaffold includes a notifications table, a general notification class, a list page, mark-as-read and mark-all-as-read actions, and a button shown only when enabled. Read operations are scoped to the notification owner.
 
-عند الحاجة مستقبلًا فقط، غيّر `STARTER_NOTIFICATIONS_ENABLED=true` ثم `php artisan optimize:clear`. إذا تستخدم cache للمسارات أو الإعدادات أعد بناءها بعد التغيير. لا يوجد أي حدث مرتبط بالإرسال؛ مشروعك يحدد متى يرسل:
+When needed, set `STARTER_NOTIFICATIONS_ENABLED=true`, then run `php artisan optimize:clear`. Rebuild route and configuration caches if your deployment uses them. No events send notifications automatically; your project decides when to send one:
 
 ```php
 $user->notify(new \App\Notifications\SystemNotification(
-    'عنوان الإشعار',
-    'تفاصيل الإشعار',
+    'Notification title',
+    'Notification details',
     '/dashboard',
 ));
 ```
 
-هذه النسخة تجهّز إشعارات قاعدة البيانات داخل التطبيق؛ البريد وpush وWebSockets إضافات مستقلة عند احتياج المشروع لها.
+This module provides database-backed in-app notifications. Email, push, and WebSockets require separate integration.
 
-## التحقق
+## Validation
 
 ```powershell
 php artisan test
@@ -96,12 +96,12 @@ npm run build
 composer types:check
 ```
 
-اختبارات القالب تشمل فصل تفضيلات الحسابات، حماية ألوان المشروع، منع التصعيد إلى مدير النظام، وتعطيل الإشعارات وعزلها بين المستخدمين. قاعدة الاختبار SQLite في الذاكرة، ومفتاح التشفير في `phpunit.xml` مخصص للاختبار فقط.
+Tests cover account preference isolation, project color protection, privilege escalation prevention, and disabled and user-scoped notifications. Tests use an in-memory SQLite database. The key in `phpunit.xml` is for testing only.
 
-## نسخة نظيفة قابلة للنقل
+## Export a clean copy
 
 ```powershell
 ./scripts/export.ps1 -Destination D:/Projects/my-new-app
 ```
 
-السكربت ينشئ مجلدًا جديدًا فقط، ولا ينسخ الأسرار أو الحسابات أو قاعدة البيانات أو الاعتماديات. هذه المرحلة قالب مشروع؛ يمكن استخراج Composer/NPM packages مستقلة منه لاحقًا عندما يثبت استخدامها عبر عدة مشاريع.
+The script creates a new directory and excludes secrets, accounts, databases, and installed dependencies. This is currently a project template; reusable Composer or npm packages can be extracted later once their interfaces have been proven across multiple projects.

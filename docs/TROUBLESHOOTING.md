@@ -1,12 +1,12 @@
-# المشاكل الشائعة وحلولها
+# Troubleshooting
 
-[العودة إلى README](../README.md) · [دليل الاستخدام](USER-GUIDE.md)
+[Back to README](../README.md) · [User guide](USER-GUIDE.md)
 
-هذا دليل تشخيص للمشاكل المتوقعة والمشاكل التي ظهرت أثناء تجهيز القالب؛ لا يعني أن كل هذه المشاكل موجودة في النسخة الحالية، ولا يضمن حصر كل مشكلة ممكنة.
+This guide covers expected issues and issues encountered while preparing the starter. It does not imply that every issue currently exists or cover every possible failure.
 
-## ابدأ من هنا
+## Start here
 
-شغّل الأوامر من مجلد مشروعك الجديد الذي يحتوي على `artisan`، وسجّل رسالة الخطأ كاملة قبل إجراء تغييرات:
+Run commands from the project directory containing `artisan`. Capture the complete error before making changes:
 
 ```powershell
 php --version
@@ -15,174 +15,174 @@ node --version
 npm --version
 ```
 
-عند وجود خطأ Laravel راجع `storage/logs/laravel.log` إذا كانت قناة السجل الحالية تكتب فيه. لا تشارك `.env` أو كلمات المرور أو مفاتيح الخدمات ضمن تقرير المشكلة. لا تستخدم `migrate:fresh` أو حذف قاعدة البيانات أو تغيير `APP_KEY` كحل عام؛ هذه الإجراءات قد تفقد بيانات المشروع أو تعطل قراءة البيانات المشفرة.
+For Laravel errors, inspect `storage/logs/laravel.log` if the configured logging channel writes there. Do not include `.env`, passwords, or service keys in issue reports. Do not use `migrate:fresh`, database deletion, or an `APP_KEY` change as general fixes: they can destroy data or make encrypted data unreadable.
 
-## التثبيت والاعتماديات
+## Installation and dependencies
 
-### Composer يرفض إصدار PHP
+### Composer rejects the PHP version
 
-الـ lock الحالي يتضمن Symfony وPHPUnit يحتاجان PHP 8.4.1 على الأقل. وجود `^8.3` في ملف المشروع وحده لا يكفي. تأكد أن `php --version` يعرض النسخة الصحيحة في الطرفية التي تشغل منها Composer؛ في Windows قد يختلف PHP الموجود في PATH عن نسخة Herd المختارة للموقع. استخدم نسخة متوافقة ثم `composer install`، ولا تتجاوز متطلبات المنصة لإخفاء الخطأ.
+The current lockfile includes Symfony and PHPUnit dependencies requiring PHP 8.4.1 or later. The root `^8.3` constraint alone is insufficient. Check `php --version` in the terminal running Composer. On Windows, PHP on PATH may differ from the version selected for the site in Herd. Use a compatible version and run `composer install`; do not bypass platform requirements to hide the error.
 
-### `could not find driver` أو امتداد PHP مفقود
+### `could not find driver` or a missing PHP extension
 
-شغّل `php --ini` لتعرف ملف PHP المستخدم و`php -m` لعرض الامتدادات. SQLite يحتاج `pdo_sqlite`؛ MySQL يحتاج `pdo_mysql`. بعد تعديل إعدادات PHP أعد تشغيل خدمة PHP عند استخدام خادم دائم. `composer check-platform-reqs` يفحص متطلبات الحزم المثبتة.
+Run `php --ini` to locate the active configuration and `php -m` to list extensions. SQLite requires `pdo_sqlite`; MySQL requires `pdo_mysql`. Restart persistent PHP services after configuration changes. Run `composer check-platform-reqs` to check installed package requirements.
 
-### `Could not resolve host` أو فشل تنزيل حزم Composer/npm
+### `Could not resolve host` or failed Composer/npm downloads
 
-ظهر فشل اتصال أثناء التجهيز داخل بيئة تنفيذ مقيدة. افحص الشبكة وDNS وإعدادات proxy وصلاحيات بيئة التشغيل، ثم أعد نفس أمر التثبيت. لا تغيّر إصدارات الحزم لمجرد فشل الشبكة، ولا تعطّل TLS كحل.
+A connection failure occurred during setup in a restricted execution environment. Check network access, DNS, proxy configuration, and execution permissions, then retry the same installation command. A network failure does not call for changing package versions or disabling TLS.
 
-### `Permission denied` عند الكتابة إلى `vendor` أو `node_modules`
+### `Permission denied` when writing to `vendor` or `node_modules`
 
-تأكد أن مجلد المشروع قابل للكتابة وأن العملية تملك صلاحية الوصول إليه. قد يكون الملف مقفولًا بواسطة عملية أخرى أو أداة حماية. عند العمل داخل أداة ذات sandbox قد يلزم السماح لأمر التثبيت بالوصول؛ الخطأ لا يثبت وجود مشكلة في كود القالب.
+Check that the process can write to the project directory. Another process or security tool may have locked a file. A sandboxed tool may require installation access. This error alone does not indicate a defect in the starter code.
 
 ### `Cannot open bootstrap script ... vendor/autoload.php`
 
-تأكد أنك داخل مجلد المشروع الصحيح وأن `composer install` اكتمل وأن الملف موجود وقابل للقراءة. إذا كان الملف موجودًا بالفعل، افحص صلاحيات العملية أو قيود بيئة التنفيذ قبل محاولة إعادة التثبيت.
+Confirm that you are in the correct project directory, `composer install` completed, and the file exists and is readable. If the file already exists, inspect process permissions and execution restrictions before reinstalling dependencies.
 
-### npm يحذر من إصدار Node غير مدعوم
+### npm reports an unsupported Node version
 
-Vite Plus المقفل يقبل `^20.19.0` أو `^22.18.0` أو `>=24.11.0`. استخدم إصدارًا ضمن هذه الحدود ثم `npm ci`. لا تستخدم `npm update` أثناء الإعداد الأولي؛ الغرض هو تثبيت الإصدارات المقفلة.
+The locked Vite Plus version accepts `^20.19.0`, `^22.18.0`, or `>=24.11.0`. Use a compatible version and run `npm ci`. Avoid `npm update` during initial setup so installation uses the locked versions.
 
-### `npm ci` يقول إن ملفات القفل غير متطابقة
+### `npm ci` reports a lockfile mismatch
 
-راجع هل تغيّر `package.json` دون تحديث `package-lock.json`. في نسخة نظيفة استخدم الملفين المتوافقين من القالب. إذا كنت غيّرت الحزم عمدًا، حدّث القفل بتثبيت الاعتماديات ثم راجع الفرق واختبره؛ لا تحذف القفل تلقائيًا.
+Check whether `package.json` changed without updating `package-lock.json`. A clean copy should use the matching files from the template. If dependencies changed intentionally, regenerate the lockfile through installation, review the differences, and test them. Do not automatically delete the lockfile.
 
-## قاعدة البيانات والإعدادات
+## Database and configuration
 
 ### `No application encryption key has been specified`
 
-في مشروع جديد فقط: أنشئ `.env` من `.env.example` ثم `php artisan key:generate`. في مشروع قائم: استرجع مفتاحه الصحيح من إعدادات نشره بدل توليد مفتاح آخر. شغّل `php artisan config:clear` إذا كان هناك config cache قديم.
+For a new project, copy `.env.example` to `.env` and run `php artisan key:generate`. For an existing application, restore its correct key from the deployment configuration instead of generating another. Run `php artisan config:clear` if stale configuration is cached.
 
-### رسالة MySQL `Access denied ... root` رغم أنك تريد SQLite
+### MySQL reports `Access denied ... root` when you intended to use SQLite
 
-حدث هذا أثناء تجهيز المعاينة عندما بقي `DB_CONNECTION=mysql`. اضبط المحرك والمسار معًا:
+This occurred during preview setup when `DB_CONNECTION=mysql` remained configured. Set both the driver and database path:
 
 ```dotenv
 DB_CONNECTION=sqlite
 DB_DATABASE=database/database.sqlite
 ```
 
-أنشئ ملف SQLite إن لم يكن موجودًا، ونفّذ `php artisan config:clear` ثم `php artisan migrate`. إذا كنت تقصد MySQL، اضبط اسم قاعدة MySQL وبيانات المستخدم؛ لا تضع مسار SQLite في `DB_DATABASE` مع محرك MySQL.
+Create the SQLite file if missing, run `php artisan config:clear`, then `php artisan migrate`. If MySQL is intended, configure its database name and credentials. Do not use an SQLite path as `DB_DATABASE` with the MySQL driver.
 
-### ملف SQLite غير موجود
+### The SQLite file is missing
 
-تأكد أن `database/database.sqlite` موجود. للمشروع الجديد يمكنك إنشاؤه باستخدام `New-Item database/database.sqlite -ItemType File`. إذا اختلف مجلد تشغيل الخادم، استخدم مسارًا مطلقًا صحيحًا في `DB_DATABASE`. لا تستبدل ملف قاعدة قائمة بملف فارغ.
+Check that `database/database.sqlite` exists. For a new project, create it with `New-Item database/database.sqlite -ItemType File`. If the server runs from a different working directory, set a valid absolute path in `DB_DATABASE`. Do not replace an existing database with an empty file.
 
-### `no such table: project_settings` أو `sessions` أو `cache`
+### `no such table: project_settings`, `sessions`, or `cache`
 
-القالب يحتاج migrations الخاصة به قبل فتحه، وإعداداته الافتراضية تستخدم قاعدة البيانات للجلسات والـ cache. افحص `php artisan migrate:status`، ثم نفّذ `php artisan migrate` على قاعدة المشروع المقصودة. لا تنسخ قاعدة Act-tracker إلى مشروع جديد بدل تشغيل migrations القالب.
+Run the starter migrations before opening the application. The default configuration uses the database for sessions and cache. Inspect `php artisan migrate:status`, then run `php artisan migrate` against the intended project database. Do not copy the Act-tracker database as a substitute for running the starter migrations.
 
-### تغييرات `.env` لا تظهر
+### Changes to `.env` are not reflected
 
-نفّذ `php artisan config:clear`. بعد تغيير تفعيل الإشعارات قد تحتاج أيضًا `php artisan route:clear` لأن تسجيل المسارات مشروط بالإعداد. أعد تشغيل العمليات طويلة العمر إن وُجدت. تغييرات `VITE_*` تحتاج إعادة تشغيل Vite أو إعادة بناء الأصول.
+Run `php artisan config:clear`. Changing the notifications flag may also require `php artisan route:clear`, because route registration depends on that setting. Restart long-running processes when applicable. Changes to `VITE_*` require restarting Vite or rebuilding assets.
 
-## الدخول والصلاحيات
+## Authentication and permissions
 
-### Seeder يطلب `STARTER_ADMIN_EMAIL` و`STARTER_ADMIN_PASSWORD`
+### The seeder requires `STARTER_ADMIN_EMAIL` and `STARTER_ADMIN_PASSWORD`
 
-ضع القيمتين في `.env` ثم امسح config cache عند الحاجة وأعد `php artisan db:seed`. القالب لا يحتوي على حساب افتراضي مشترك. عند تعديل seeders راجع استخدام `syncPermissions` لأنه قد يستبدل صلاحيات الأدوار التي عدلتها من الواجهة.
+Set both values in `.env`, clear cached configuration if necessary, then rerun `php artisan db:seed`. There is no shared default account. Review `syncPermissions` before reseeding: it may overwrite role permissions changed through the interface.
 
-### غيّرت كلمة مرور المدير في `.env` لكن الدخول ما زال بالكلمة القديمة
+### Changing the administrator password in `.env` does not change login credentials
 
-هذا متوقع: seeder ينشئ الحساب إن لم يوجد ولا يعيد تعيين كلمة مرور حساب قائم. غيّرها من مسار الحسابات المعتمد أو استعادة كلمة المرور. تغيير بريد المدير ثم إعادة seeding قد يصطدم باسم المستخدم `admin` الموجود؛ لا تعتبر ذلك وسيلة لإعادة تسمية المدير.
+This is expected. The seeder creates a missing account but does not reset an existing password. Use user management or password recovery. Changing the administrator email and reseeding may conflict with the existing `admin` username; reseeding is not an account-renaming workflow.
 
-### الصفحة ترجع 403 أو الرابط غير ظاهر
+### A page returns 403 or a navigation link is missing
 
-راجع دور المستخدم وصلاحيته للمسار. مثلًا **ألوان المشروع** تحتاج `project.manage`، وهي ليست ضمن صلاحيات الدور `admin` الأولية. مستخدم رقم 1 لا يصبح مدير نظام تلقائيًا؛ الامتياز مرتبط بدور `super-admin`.
+Check the user's role and permission for the route. For example, **Project colors** requires `project.manage`, which is not included in the initial `admin` permissions. User ID 1 does not automatically grant system privileges; those come from `super-admin`.
 
-إذا عدّلت الصلاحيات خارج واجهات الحزمة وبقي cache قديم، استخدم `php artisan permission:cache-reset`، ثم أعد تحميل الصفحة. منح الصلاحية لا يغني عن وجود route صحيح لها.
+If permissions were modified outside the application's interface and cached values remain, run `php artisan permission:cache-reset` and reload. Granting a permission does not create a missing route.
 
-### تعديل أو حذف `super-admin` يرجع 403، أو إزالة دوره من آخر مدير ترجع 422
+### Editing or deleting `super-admin` returns 403, or demoting the last administrator returns 422
 
-هذه حماية مقصودة. لا يمكن حذف أو تعديل الرول المحمي، ولا ترك المشروع بلا مدير نظام نشط. المدير العادي لا يستطيع تعديل مستخدم يحمل هذا الدور أو منحه لمستخدم آخر.
+These are intentional protections. The protected role cannot be edited or deleted, and the application must retain an active super administrator. Ordinary administrators cannot edit a user holding that role or grant it to another user.
 
-### البريد أو اسم المستخدم مستخدم رغم حذف الحساب
+### An email or username remains taken after deleting an account
 
-الحذف العادي soft delete ويحتفظ بالحساب وقيمه الفريدة. استعد الحساب المقصود أو استخدم بريدًا واسم مستخدم مختلفين. الحذف النهائي قرار مستقل وليس خطوة تشخيص لازمة.
+Normal deletion is a soft delete that retains the account and its unique values. Restore the intended account or choose different identifiers. Permanent deletion is a separate decision, not a required troubleshooting step.
 
-### `/register` ترجع 404
+### `/register` returns 404
 
-التسجيل العام معطّل، وصفحة `auth/Register.vue` غير مرفقة. تفعيل خيار Fortify وحده لا يجهز مسار تسجيل مكتمل؛ يلزم بناء الصفحة ومراجعة قواعد إنشاء الحساب والدور الافتراضي واختبارها.
+Public registration is disabled, and `auth/Register.vue` is not included. Enabling the Fortify option alone does not provide a complete registration flow. Add the page, review account creation rules and default roles, and test the workflow.
 
-### صفحة الأمان تطلب تأكيد كلمة المرور
+### The security page asks for password confirmation
 
-هذا متوقع بسبب middleware تأكيد كلمة المرور. كذلك معظم صفحات الإدارة تتطلب مستخدمًا مسجلًا وبريدًا متحققًا منه.
+This is expected behavior from password confirmation middleware. Most administrative pages also require an authenticated user with a verified email address.
 
 ### `419 Page Expired`
 
-حدّث صفحة النموذج لاستعادة جلسة وCSRF token متوافقين. تأكد أنك تستخدم نفس العنوان باستمرار بدل التبديل بين `localhost` و`127.0.0.1`، وأن cookies والجلسات تعمل، وجدول `sessions` موجود مع الإعداد الافتراضي. افحص إعدادات نطاق الجلسة وHTTPS عند نشر المشروع.
+Refresh the form to obtain a matching session and CSRF token. Use a consistent hostname instead of alternating between `localhost` and `127.0.0.1`. Check cookies, sessions, and the `sessions` table required by the default configuration. Review session domain and HTTPS settings when deploying.
 
-### رسائل استعادة كلمة المرور لا تصل
+### Password reset email does not arrive
 
-`MAIL_MAILER=log` افتراضيًا يكتب الرسالة في السجل. جهّز مزود البريد وبياناته و`APP_URL` قبل توقع وصول رسالة حقيقية. تعطيل وحدة إشعارات القالب لا يعطّل رسائل Fortify تلقائيًا؛ الاثنان مستقلان.
+The default `MAIL_MAILER=log` writes messages to the log. Configure a mail provider, credentials, and `APP_URL` before expecting delivery. The starter notification flag and Fortify authentication mail are independent.
 
-## الواجهة والألوان واللغة
+## Interface, colors, and languages
 
-### صفحة بيضاء أو `Vite manifest not found`
+### A blank page or `Vite manifest not found`
 
-شغّل `npm ci` ثم `npm run build`، أو شغّل `npm run dev` أثناء التطوير بجانب خادم Laravel. راجع Console المتصفح وطلب الأصل الفاشل إذا استمر الخطأ. ملف `public/hot` يشير إلى خادم التطوير؛ إذا توقف Vite وبقي الملف، تحقق من محتواه قبل إزالته ثم استخدم build.
+Run `npm ci` followed by `npm run build`, or run `npm run dev` alongside Laravel during development. Inspect the browser console and failed asset requests if the issue persists. `public/hot` points to the development server. If Vite stopped but the file remains, verify its contents before removing the stale file and using built assets.
 
-### ملفات `@/routes` أو `@/actions` غير موجودة في فحص TypeScript
+### TypeScript cannot find `@/routes` or `@/actions`
 
-هي ملفات مولدة من Wayfinder. نفّذ:
+Wayfinder generates these files. Run:
 
 ```powershell
 php artisan wayfinder:generate --with-form
 npm run types:check
 ```
 
-البناء أيضًا يشغّل توليدها. لا تنقل ملفات مولدة من مشروع سابق يحتوي على routes مختلفة.
+The build also generates them. Do not copy generated files from a previous project with different routes.
 
-### غيرت اللون الافتراضي لكن اللون القديم ما زال ظاهرًا
+### The old color remains after changing a default
 
-الإعداد المحفوظ في `project_settings` يتقدم على الافتراضي. افتح **ألوان المشروع**، ثم **استعادة الألوان الأصلية** وبعدها **حفظ الألوان**. أعد تحميل الصفحات المفتوحة في حسابات أخرى؛ لا توجد مزامنة لحظية بين النوافذ.
+Saved values in `project_settings` override defaults. Open **Project colors**, reset the form to its defaults, then save. Reload pages open under other accounts; windows do not synchronize in real time.
 
-### غيرت لون الوضع الفاتح ولم يتغير الوضع الداكن
+### Changing a light color does not change dark mode
 
-لكل وضع مجموعة مستقلة. عدّل المجموعة المقصودة، وراجع إعداد المظهر للحساب. اختيار **حسب الجهاز** يتبع إعداد نظام التشغيل.
+Each mode has a separate palette. Edit the intended palette and check the account's appearance setting. System mode follows the operating system preference.
 
-### اللون مرفوض أو النص صعب القراءة
+### A color is rejected or text is hard to read
 
-الحقول تقبل `#RRGGBB` فقط، مثل `#0d5236`. لا تقبل أسماء الألوان أو صيغة hex المختصرة. اختر لون النص على الزر ولون النص العام بما يناسب الخلفيات؛ لا يوجد حساب تباين تلقائي في النسخة الحالية.
+Fields accept `#RRGGBB`, such as `#0d5236`. Named colors and short hex values are unsupported. Choose foreground colors that remain readable against their backgrounds; automatic contrast calculation is not included.
 
-### غيرت `STARTER_LAYOUT` أو `STARTER_LOCALE` وحساب موجود لم يتغير
+### Changing `STARTER_LAYOUT` or `STARTER_LOCALE` does not affect an existing account
 
-اختيار الحساب المحفوظ يتقدم على الافتراضي. غيّره من **الإعدادات ← المظهر** أو زر اللغة. للزائر قد تتقدم لغة الجلسة المحفوظة على اللغة الافتراضية أيضًا.
+Saved account preferences override defaults. Change them under **Settings > Appearance** or through the language button. A guest's saved session language can also override the default.
 
-### بعض النصوص ما زالت إنجليزية
+### Some text remains English when Arabic is selected
 
-أضف المفتاح الإنجليزي الدقيق إلى `resources/js/locales/ar.ts` لنصوص Vue، أو `lang/ar.json` لرسائل PHP. تأكد من استخدام `$t()` أو `__()` بدل النص الثابت. أسماء المستخدمين والأدوار والبيانات المدخلة ومفاتيح الصلاحيات ليست محتوى يُترجم تلقائيًا.
+Add the exact English key to `resources/js/locales/ar.ts` for Vue text or `lang/ar.json` for PHP messages. Use `$t()` or `__()` instead of hardcoded text. User names, role names, entered data, and permission keys are not automatically translated.
 
-### خط Cairo لا يظهر بدون إنترنت
+### Cairo does not load without internet access
 
-الخط محمّل من Google Fonts، وعند تعذر تحميله يستخدم المتصفح خطًا بديلًا. استضف ملفات الخط محليًا إذا كان المشروع سيعمل بلا وصول لخدمة الخطوط. راجع Network المتصفح للتحقق من طلبات الخط.
+The font is loaded from Google Fonts. If loading fails, the browser uses a fallback. Host the font files locally when the application must work without access to that service. Inspect font requests in the browser's Network panel.
 
-### الإشعارات غير ظاهرة أو `/notifications` ترجع 404
+### Notifications are hidden or `/notifications` returns 404
 
-هذا متوقع لأن الوحدة معطلة افتراضيًا حسب الطلب. عند الحاجة الفعلية اتبع تفعيلها في دليل الاستخدام ثم أعد بناء caches. التفعيل وحده لا ينشئ إشعارات: يجب أن يستدعي مشروعك `SystemNotification` عند الحدث المناسب.
+The module is intentionally disabled by default. When needed, follow the activation steps in the user guide and rebuild caches. Enabling the module does not create notifications; your application must invoke `SystemNotification` at the appropriate event.
 
-### الإشعار لا يظهر فورًا أو لا يصل كرسالة بريد أو push
+### Notifications do not appear immediately or arrive by email or push
 
-الوحدة الحالية تحفظ إشعارات قاعدة البيانات وتعرضها في الصفحة عند طلبها. لا توجد قناة بريد أو push أو WebSockets أو polling جاهزة. أضف هذه القنوات وتوصيلها بأحداث المشروع إذا احتجتها.
+The module stores database notifications and displays them when the page is requested. Email, push, WebSockets, and polling are not included. Add the required channels and connect them to project events when needed.
 
-## التصدير والتحقق
+## Export and validation
 
-### التصدير يرفض المجلد
+### Export rejects the destination
 
-الوجهة يجب أن تكون مجلدًا جديدًا خارج مجلد القالب. اختر اسمًا جديدًا أو فك ZIP يدويًا. السكربت لا يدمج الملفات داخل مشروع قائم.
+The destination must be a new directory outside the starter directory. Choose a new name or extract the ZIP manually. The script does not merge files into existing projects.
 
-### PowerShell يمنع تشغيل السكربت
+### PowerShell blocks the export script
 
-يمكن فك ZIP بدل تشغيله. إذا كان الجهاز مُدارًا من مؤسسة، اتبع سياسة تشغيل السكربتات المطبقة عليه؛ لا يلزم تعطيل حماية الجهاز لاستخدام القالب.
+Extract the ZIP instead. On an organization-managed device, follow its script execution policy. Disabling device protection is not required to use the starter.
 
-### فحص التنسيق يفشل
+### Formatting checks fail
 
-`npm run check` لا يغير الملفات. استخدم `npm run check:fix` لمعالجة التنسيق وأخطاء lint القابلة للإصلاح، ثم راجع الفروق. لـ PHP استخدم `composer lint`. نجاح التنسيق لا يغني عن الاختبارات أو تحليل الأنواع.
+`npm run check` does not modify files. Use `npm run check:fix` for formatting and fixable lint errors, then review the differences. Use `composer lint` for PHP. Passing formatting checks does not replace tests or type analysis.
 
-### كيف أبلغ عن مشكلة غير موجودة هنا؟
+### Reporting an issue not covered here
 
-اكتب إصدار PHP وNode ونظام التشغيل، الخطوات التي تسبب المشكلة، الصفحة أو الأمر، النتيجة المتوقعة والفعلية، ومقتطف الخطأ بعد إزالة البيانات الحساسة. حدّد إن كانت المشكلة في نسخة نظيفة أم بعد تعديلات مشروعك. أضف اختبارًا يعيد إنتاج الخطأ بعد تشخيصه، وحدّث هذا الدليل بالحل المثبت.
+Include the PHP and Node versions, operating system, reproduction steps, affected page or command, expected and actual behavior, and a sanitized error excerpt. State whether the issue occurs in a clean copy or after customization. Once diagnosed, add a regression test and document the verified solution.
 
-## نطاق التحقق وحدوده
+## Validation scope and limitations
 
-في تجهيز النسخة نجحت 45 حالة اختبار مع تجاوز حالتين، ونجح PHPStan وTypeScript وlint والبناء. تم اختبار تفضيلات الحسابات والألوان وبعض حدود الصلاحيات وتعطيل الإشعارات وعزلها. هذه ليست مراجعة أمنية شاملة أو اختبار تحميل أو إثبات عمل على كل أنظمة التشغيل ومحركات قواعد البيانات والاستضافات. مسار SSR والإرسال الفعلي للبريد والنشر الإنتاجي لم يتم التحقق منها ضمن هذا التسليم.
+During preparation, 45 tests passed and 2 were skipped. PHPStan, TypeScript, lint, and the build passed. Checks covered account preferences, colors, selected authorization boundaries, disabled notifications, and notification ownership isolation. This was not a comprehensive security audit, load test, or compatibility certification across operating systems, database engines, and hosting providers. SSR, actual email delivery, and production deployment were not verified as part of this delivery.
